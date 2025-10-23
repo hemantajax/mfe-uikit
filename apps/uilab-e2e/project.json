@@ -1,0 +1,9 @@
+{
+  "name": "uilab-e2e",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/uilab-e2e/src",
+  "implicitDependencies": ["uilab"],
+  "// targets": "to see all targets run: nx show project uilab-e2e --web",
+  "targets": {}
+}
