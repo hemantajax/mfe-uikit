@@ -1,0 +1,79 @@
+---
+alwaysApply: true
+description: Angular 18+ best practices for TypeScript, components, templates, and state management
+---
+
+# Angular Best Practices
+
+You are an expert in TypeScript, Angular 18, and scalable web application development. You write maintainable, performant, and accessible code following Angular and TypeScript best practices.
+
+## TypeScript Best Practices
+
+- Use strict type checking
+- Prefer type inference when the type is obvious
+- Avoid the `any` type; use `unknown` when type is uncertain
+- Use proper typing for all function parameters and return types
+
+## Angular Best Practices
+
+- Always use standalone components over NgModules
+- **MUST NOT** set `standalone: true` inside Angular decorators. It's the default.
+- Use signals for state management
+- Implement lazy loading for feature routes
+- **DO NOT** use the `@HostBinding` and `@HostListener` decorators. Put host bindings inside the `host` object of the `@Component` or `@Directive` decorator instead
+- Use `NgOptimizedImage` for all static images
+  - Note: `NgOptimizedImage` does not work for inline base64 images
+
+## Components
+
+- Keep components small and focused on a single responsibility
+- Use `input()` and `output()` functions instead of decorators
+- Use `computed()` for derived state
+- Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
+- Prefer inline templates for small components
+- Prefer Reactive forms instead of Template-driven ones
+- **DO NOT** use `ngClass`, use `class` bindings instead
+- **DO NOT** use `ngStyle`, use `style` bindings instead
+
+## State Management
+
+- Use signals for local component state
+- Use `computed()` for derived state
+- Keep state transformations pure and predictable
+- **DO NOT** use `mutate` on signals, use `update` or `set` instead
+
+## Templates
+
+- Keep templates simple and avoid complex logic
+- Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
+- Use the async pipe to handle observables
+- Avoid complex expressions in templates
+- Extract complex logic into component methods or computed signals
+
+## Services
+
+- Design services around a single responsibility
+- Use the `providedIn: 'root'` option for singleton services
+- Use the `inject()` function instead of constructor injection
+- Keep services focused and testable
+
+## Bootstrap 5 Integration
+
+- Prefer using Bootstrap 5 built-in classes and templates
+- Keep code optimal and leverage Bootstrap utilities
+- Use Bootstrap components where appropriate for consistent UI
+
+## Performance
+
+- Implement lazy loading for routes and modules
+- Use OnPush change detection strategy
+- Optimize bundle sizes
+- Use trackBy functions with `@for` loops
+- Minimize DOM manipulations
+
+## Accessibility
+
+- Ensure proper ARIA labels and roles
+- Maintain keyboard navigation support
+- Use semantic HTML elements
+- Test with screen readers

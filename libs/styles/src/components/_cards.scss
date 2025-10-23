@@ -1,0 +1,96 @@
+/**
+ * COMPONENTS - Cards
+ * Principle: Reusable card component with variations
+ */
+
+.card-custom {
+  @include card-style;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-base);
+
+  &:hover {
+    box-shadow: var(--shadow);
+  }
+
+  &__header {
+    padding: var(--spacing-4);
+    border-bottom: var(--border-width) solid var(--color-gray-300);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+  }
+
+  &__subtitle {
+    margin-top: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+  }
+
+  &__body {
+    flex: 1;
+    padding: var(--spacing-4);
+  }
+
+  &__footer {
+    padding: var(--spacing-4);
+    border-top: var(--border-width) solid var(--color-gray-300);
+    background-color: var(--color-gray-100);
+  }
+
+  &__image {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+  }
+
+  &__actions {
+    @include flex-between;
+    gap: var(--spacing-3);
+  }
+
+  // Variants
+  &--hoverable {
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+  }
+
+  &--bordered {
+    border: var(--border-width) solid var(--color-gray-300);
+  }
+
+  &--flat {
+    box-shadow: none;
+    background-color: var(--color-gray-100);
+  }
+
+  &--horizontal {
+    flex-direction: row;
+
+    .card-custom__image {
+      width: 40%;
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
+    }
+  }
+}
+
+// Card grid
+.card-grid {
+  display: grid;
+  gap: var(--spacing-4);
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+  @include respond-to('md') {
+    gap: var(--spacing-6);
+  }
+}

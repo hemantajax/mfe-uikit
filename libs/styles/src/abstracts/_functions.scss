@@ -1,0 +1,48 @@
+// /**
+//  * ABSTRACTS - Functions
+//  * Principle: DRY - Reusable functions for common calculations
+//  */
+
+// // Convert px to rem
+// @function rem($pixels, $base: 16) {
+//   @return #{$pixels / $base}rem;
+// }
+
+// // Get spacing value
+// @function spacing($multiplier) {
+//   @return calc(var(--spacing-4) * #{$multiplier});
+// }
+
+// // Get color with opacity
+// @function color-opacity($color, $opacity) {
+//   @return rgba($color, $opacity);
+// }
+
+// // Strip unit from value
+// @function strip-unit($number) {
+//   @if type-of($number) == 'number' and not unitless($number) {
+//     @return $number / ($number * 0 + 1);
+//   }
+//   @return $number;
+// }
+
+// // Calculate contrast ratio (for accessibility)
+// @function contrast-ratio($color1, $color2) {
+//   $l1: luminance($color1);
+//   $l2: luminance($color2);
+
+//   @if $l1 > $l2 {
+//     @return ($l1 + 0.05) / ($l2 + 0.05);
+//   } @else {
+//     @return ($l2 + 0.05) / ($l1 + 0.05);
+//   }
+// }
+
+// // Get relative luminance
+// @function luminance($color) {
+//   $r: red($color) / 255;
+//   $g: green($color) / 255;
+//   $b: blue($color) / 255;
+
+//   @return 0.2126 * $r + 0.7152 * $g + 0.0722 * $b;
+// }

@@ -1,0 +1,45 @@
+/**
+ * LAYOUTS - Header
+ * Principle: Modular component with BEM naming
+ */
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-index-sticky);
+  height: var(--header-height);
+  background-color: var(--color-white);
+  border-bottom: var(--border-width) solid var(--color-gray-300);
+  box-shadow: var(--shadow-sm);
+
+  &__container {
+    height: 100%;
+    @include flex-between;
+    padding: 0 var(--spacing-4);
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+  }
+
+  &__brand {
+    @include flex-center;
+    gap: var(--spacing-3);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+  }
+
+  &__logo {
+    height: 40px;
+    width: auto;
+  }
+
+  &__nav {
+    @include flex-center;
+    gap: var(--spacing-4);
+  }
+
+  &__actions {
+    @include flex-center;
+    gap: var(--spacing-3);
+  }
+}

@@ -1,0 +1,75 @@
+/**
+ * THEMES - Default Theme
+ * Principle: Theming with CSS custom properties
+ * Override variables here for different themes
+ */
+
+// Light theme (default)
+[data-theme='light'],
+:root {
+  --theme-bg-primary: var(--color-white);
+  --theme-bg-secondary: var(--color-gray-100);
+  --theme-bg-tertiary: var(--color-gray-200);
+
+  --theme-text-primary: var(--color-gray-900);
+  --theme-text-secondary: var(--color-gray-700);
+  --theme-text-tertiary: var(--color-gray-600);
+
+  --theme-border-color: var(--color-gray-300);
+  --theme-shadow: var(--shadow);
+}
+
+// Dark theme
+[data-theme='dark'] {
+  --theme-bg-primary: var(--color-gray-900);
+  --theme-bg-secondary: var(--color-gray-800);
+  --theme-bg-tertiary: var(--color-gray-700);
+
+  --theme-text-primary: var(--color-white);
+  --theme-text-secondary: var(--color-gray-300);
+  --theme-text-tertiary: var(--color-gray-400);
+
+  --theme-border-color: var(--color-gray-700);
+  --theme-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.5);
+
+  // Update base colors for dark theme
+  --color-gray-100: #212529;
+  --color-gray-200: #343a40;
+  --color-gray-300: #495057;
+
+  // Adjust component colors
+  .card-custom,
+  .modal__container,
+  .header {
+    background-color: var(--theme-bg-primary);
+    color: var(--theme-text-primary);
+    border-color: var(--theme-border-color);
+  }
+
+  .form-group__input,
+  .form-group__select,
+  .form-group__textarea {
+    background-color: var(--theme-bg-secondary);
+    color: var(--theme-text-primary);
+    border-color: var(--theme-border-color);
+  }
+}
+
+// Theme utilities
+.theme {
+  &__bg-primary {
+    background-color: var(--theme-bg-primary);
+  }
+
+  &__bg-secondary {
+    background-color: var(--theme-bg-secondary);
+  }
+
+  &__text-primary {
+    color: var(--theme-text-primary);
+  }
+
+  &__text-secondary {
+    color: var(--theme-text-secondary);
+  }
+}

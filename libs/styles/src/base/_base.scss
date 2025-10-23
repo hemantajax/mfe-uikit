@@ -1,0 +1,74 @@
+/**
+ * BASE - Base Styles
+ * Principle: Global utility styles
+ */
+
+// Main application container
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+// Main content area
+.main-content {
+  flex: 1;
+  padding: var(--spacing-4);
+
+  @include respond-to('md') {
+    padding: var(--spacing-6);
+  }
+}
+
+// Container
+.container-fluid {
+  width: 100%;
+  padding-right: var(--spacing-4);
+  padding-left: var(--spacing-4);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+// Selection
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+// Focus visible
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+// Disabled state
+[disabled],
+.disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// Loading state
+.loading {
+  position: relative;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.7);
+    @include flex-center;
+  }
+}
+
+// Hidden
+.hidden {
+  display: none !important;
+}
+
+// Screen reader only
+.sr-only {
+  @include visually-hidden;
+}

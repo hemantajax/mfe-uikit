@@ -1,1 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+
+// Import shared styles library
+@use '../../../libs/styles/src/main.scss' as *;
+
+// App-specific styles
+// Add any application-specific overrides below

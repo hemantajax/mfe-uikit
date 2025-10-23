@@ -1,0 +1,92 @@
+/**
+ * LAYOUTS - Sidebar
+ * Principle: Flexible sidebar with responsive behavior
+ */
+
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  background-color: var(--color-white);
+  border-right: var(--border-width) solid var(--color-gray-300);
+  overflow-y: auto;
+  transition: var(--transition-base);
+  z-index: var(--z-index-fixed);
+  @include custom-scrollbar;
+
+  @media (max-width: 991px) {
+    transform: translateX(-100%);
+
+    &.is-open {
+      transform: translateX(0);
+      box-shadow: var(--shadow-lg);
+    }
+  }
+
+  &__header {
+    padding: var(--spacing-4);
+    border-bottom: var(--border-width) solid var(--color-gray-300);
+  }
+
+  &__content {
+    padding: var(--spacing-4);
+  }
+
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    padding: var(--spacing-3) var(--spacing-4);
+    color: var(--color-gray-700);
+    border-radius: var(--border-radius);
+    transition: var(--transition-fast);
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color-gray-100);
+      color: var(--color-primary);
+    }
+
+    &.is-active {
+      background-color: var(--color-primary);
+      color: var(--color-white);
+    }
+  }
+
+  &__icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Main content with sidebar offset
+.with-sidebar {
+  margin-left: var(--sidebar-width);
+
+  @media (max-width: 991px) {
+    margin-left: 0;
+  }
+}
+
+// Sidebar overlay for mobile
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--z-index-fixed) - 1);
+
+  @media (max-width: 991px) {
+    &.is-open {
+      display: block;
+    }
+  }
+}
