@@ -1,6 +1,6 @@
 {
   "name": "@hemantajax/uikit",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Complete UI Kit for Angular 20 Micro-Frontend applications - includes layout, components, services, and utilities",
   "keywords": [
     "angular",

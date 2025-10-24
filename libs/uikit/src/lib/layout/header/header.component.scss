@@ -1,0 +1,43 @@
+.navbar {
+  z-index: 1030;
+
+  .navbar-brand {
+    font-size: 1.5rem;
+
+    i {
+      font-size: 1.75rem;
+      vertical-align: middle;
+    }
+  }
+
+  .nav-link {
+    transition: all 0.3s ease;
+    border-radius: 0.375rem;
+    margin: 0 0.25rem;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &.active {
+      background-color: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
+    }
+
+    i {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    .navbar-nav {
+      padding: 1rem 0;
+
+      .nav-item {
+        padding: 0.25rem 0;
+      }
+    }
+  }
+}

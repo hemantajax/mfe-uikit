@@ -6,10 +6,10 @@
  */
 
 // ===== Layout Components =====
-export * from './lib/layout/layout';
+export * from './lib/layout';
 
 // ===== UI Components =====
-export * from './lib/components/components';
+export * from './lib/components';
 
 // ===== Services =====
 export * from './lib/services/services';
