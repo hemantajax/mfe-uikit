@@ -20,7 +20,8 @@
     "affected:build": "nx affected:build",
     "affected:lint": "nx affected:lint",
     "graph": "nx graph",
-    "reset": "nx reset"
+    "reset": "nx reset",
+    "publish": "npm version patch && nx build uikit && npm publish dist/libs/uikit"
   },
   "private": true,
   "dependencies": {
