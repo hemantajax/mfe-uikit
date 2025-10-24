@@ -7,11 +7,10 @@
   "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/angular:ng-packagr-lite",
+      "executor": "@nx/angular:package",
       "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "project": "libs/uikit/ng-package.json",
-        "tsConfig": "libs/uikit/tsconfig.lib.json"
+        "project": "libs/uikit/ng-package.json"
       },
       "configurations": {
         "production": {

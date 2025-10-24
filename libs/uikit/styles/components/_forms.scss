@@ -1,0 +1,162 @@
+/**
+ * COMPONENTS - Forms
+ * Principle: Accessible and consistent form styling
+ */
+
+.form-group {
+  margin-bottom: var(--spacing-4);
+
+  &__label {
+    display: block;
+    margin-bottom: var(--spacing-2);
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-900);
+    font-size: var(--font-size-base);
+
+    &--required::after {
+      content: '*';
+      color: var(--color-danger);
+      margin-left: var(--spacing-1);
+    }
+  }
+
+  &__input {
+    width: 100%;
+    padding: var(--spacing-3);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    color: var(--color-gray-900);
+    background-color: var(--color-white);
+    border: var(--border-width) solid var(--color-gray-400);
+    border-radius: var(--border-radius);
+    transition: var(--transition-fast);
+
+    &:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    &::placeholder {
+      color: var(--color-gray-500);
+    }
+
+    &:disabled {
+      background-color: var(--color-gray-200);
+      cursor: not-allowed;
+    }
+
+    &--error {
+      border-color: var(--color-danger);
+
+      &:focus {
+        box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+      }
+    }
+
+    &--success {
+      border-color: var(--color-success);
+
+      &:focus {
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+      }
+    }
+  }
+
+  &__textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  &__select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-3) center;
+    background-size: 16px 12px;
+    padding-right: var(--spacing-6);
+  }
+
+  &__help {
+    display: block;
+    margin-top: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+  }
+
+  &__error {
+    display: block;
+    margin-top: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-danger);
+  }
+
+  &__success {
+    display: block;
+    margin-top: var(--spacing-2);
+    font-size: var(--font-size-sm);
+    color: var(--color-success);
+  }
+}
+
+// Checkbox and Radio
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
+
+  &__input {
+    width: 1.25rem;
+    height: 1.25rem;
+    cursor: pointer;
+
+    &:focus {
+      @include focus-visible;
+    }
+  }
+
+  &__label {
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+// Input group
+.input-group {
+  display: flex;
+
+  &__prepend,
+  &__append {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-3);
+    background-color: var(--color-gray-200);
+    border: var(--border-width) solid var(--color-gray-400);
+    font-size: var(--font-size-base);
+    white-space: nowrap;
+  }
+
+  &__prepend {
+    border-right: none;
+    border-radius: var(--border-radius) 0 0 var(--border-radius);
+  }
+
+  &__append {
+    border-left: none;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  }
+
+  .form-group__input {
+    border-radius: 0;
+
+    &:first-child {
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
+    }
+
+    &:last-child {
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+  }
+}

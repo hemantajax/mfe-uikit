@@ -15,14 +15,6 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@mfe-uikit/layout": ["libs/layout/src/index.ts"],
-      "@mfe-uikit/components": ["libs/components/src/index.ts"],
-      "@mfe-uikit/services": ["libs/services/src/index.ts"],
-      "@mfe-uikit/core": ["libs/core/src/index.ts"],
-      "@mfe-uikit/pipes": ["libs/pipes/src/index.ts"],
-      "@mfe-uikit/directives": ["libs/directives/src/index.ts"],
-      "@mfe-uikit/utils": ["libs/utils/src/index.ts"],
-      "@mfe-uikit/constants": ["libs/constants/src/index.ts"],
       "@mfe-uikit/styles": ["libs/styles/src/index.ts"],
       "@mfe-uikit/uikit": ["libs/uikit/src/index.ts"]
     }

@@ -1,0 +1,59 @@
+/**
+ * LAYOUTS - Footer
+ * Principle: Consistent footer styling
+ */
+
+.footer {
+  min-height: var(--footer-height);
+  background-color: var(--color-gray-900);
+  color: var(--color-white);
+  padding: var(--spacing-6) var(--spacing-4);
+  margin-top: auto;
+
+  &__container {
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+  }
+
+  &__content {
+    display: grid;
+    gap: var(--spacing-6);
+
+    @include respond-to('md') {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &__section {
+    &-title {
+      font-size: var(--font-size-lg);
+      font-weight: var(--font-weight-semibold);
+      margin-bottom: var(--spacing-3);
+    }
+  }
+
+  &__links {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  &__link {
+    color: var(--color-gray-400);
+    transition: var(--transition-fast);
+
+    &:hover {
+      color: var(--color-white);
+      text-decoration: none;
+    }
+  }
+
+  &__bottom {
+    margin-top: var(--spacing-6);
+    padding-top: var(--spacing-4);
+    border-top: var(--border-width) solid var(--color-gray-700);
+    text-align: center;
+    color: var(--color-gray-500);
+    font-size: var(--font-size-sm);
+  }
+}

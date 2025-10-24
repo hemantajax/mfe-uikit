@@ -1,0 +1,120 @@
+/**
+ * COMPONENTS - Modals
+ * Principle: Accessible modal component
+ */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-index-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+  padding: var(--spacing-4);
+  opacity: 0;
+  visibility: hidden;
+  transition: var(--transition-base);
+
+  &.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: var(--z-index-modal-backdrop);
+    cursor: pointer;
+  }
+
+  &__container {
+    position: relative;
+    z-index: calc(var(--z-index-modal) + 1);
+    width: 100%;
+    max-width: 500px;
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    transform: scale(0.95);
+    transition: var(--transition-base);
+
+    .modal.is-open & {
+      transform: scale(1);
+    }
+  }
+
+  &__header {
+    @include flex-between;
+    padding: var(--spacing-5);
+    border-bottom: var(--border-width) solid var(--color-gray-300);
+  }
+
+  &__title {
+    margin: 0;
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-gray-900);
+  }
+
+  &__close {
+    @include button-reset;
+    @include flex-center;
+    width: 32px;
+    height: 32px;
+    border-radius: var(--border-radius-circle);
+    color: var(--color-gray-600);
+    transition: var(--transition-fast);
+
+    &:hover {
+      background-color: var(--color-gray-200);
+      color: var(--color-gray-900);
+    }
+
+    &:focus-visible {
+      @include focus-visible;
+    }
+  }
+
+  &__body {
+    padding: var(--spacing-5);
+  }
+
+  &__footer {
+    @include flex-between;
+    padding: var(--spacing-5);
+    border-top: var(--border-width) solid var(--color-gray-300);
+    background-color: var(--color-gray-100);
+  }
+
+  // Size variants
+  &--sm {
+    .modal__container {
+      max-width: 400px;
+    }
+  }
+
+  &--lg {
+    .modal__container {
+      max-width: 800px;
+    }
+  }
+
+  &--xl {
+    .modal__container {
+      max-width: 1200px;
+    }
+  }
+
+  &--fullscreen {
+    padding: 0;
+
+    .modal__container {
+      max-width: none;
+      width: 100%;
+      height: 100%;
+      border-radius: 0;
+    }
+  }
+}

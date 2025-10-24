@@ -1,0 +1,75 @@
+/**
+ * Main Styles Entry Point
+ * Following 7 Principles of Clean and Optimized CSS:
+ * 1. Consistent Naming Convention (BEM)
+ * 2. Logical Structure & Organization
+ * 3. Low Specificity
+ * 4. DRY Principle
+ * 5. CSS Variables for Theming
+ * 6. Modularization
+ * 7. Performance Optimization
+ */
+
+// ============================================================================
+// 1. ABSTRACTS - Variables, Functions, Mixins
+// ============================================================================
+// Keep these active - useful for customization and theming
+@use 'abstracts/variables' as *;
+@use 'abstracts/functions' as *;
+@use 'abstracts/mixins' as *;
+
+// ============================================================================
+// 2. VENDORS - Third-party styles (Bootstrap 5)
+// ============================================================================
+// Bootstrap 5 provides comprehensive styling out of the box
+@use 'vendors/bootstrap' as *;
+
+// ============================================================================
+// 3. BASE - Reset, Typography, Base Styles
+// ============================================================================
+// Bootstrap already handles most base styles
+// Uncomment these if you need additional customizations
+// @use 'base/reset' as *;
+// @use 'base/typography' as *;
+// @use 'base/base' as *;
+
+// ============================================================================
+// 4. LAYOUTS - Grid System, Layout Components
+// ============================================================================
+// Bootstrap has excellent grid system and layout utilities
+// Uncomment specific layouts as needed
+// @use 'layouts/grid' as *;
+// @use 'layouts/header' as *;
+// @use 'layouts/footer' as *;
+// @use 'layouts/sidebar' as *;
+
+// ============================================================================
+// 5. COMPONENTS - Reusable UI Components
+// ============================================================================
+// Bootstrap provides most common components
+// Uncomment specific components if you need custom styling beyond Bootstrap
+// @use 'components/buttons' as *;
+// @use 'components/cards' as *;
+// @use 'components/forms' as *;
+// @use 'components/modals' as *;
+// @use 'components/navigation' as *;
+
+// ============================================================================
+// 6. THEMES - Theme Configurations
+// ============================================================================
+// Uncomment if you want light/dark theme support
+// @use 'themes/default' as *;
+
+// ============================================================================
+// 7. UTILITIES - Helper Classes
+// ============================================================================
+// Bootstrap has comprehensive utility classes
+// Uncomment specific utilities if you need additional helpers
+// @use 'utilities/spacing' as *;
+// @use 'utilities/text' as *;
+// @use 'utilities/display' as *;
+
+// ============================================================================
+// 8. YOUR CUSTOM STYLES
+// ============================================================================
+// Add your custom styles below or create new files and import them here

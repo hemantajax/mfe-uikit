@@ -1,0 +1,146 @@
+// /**
+//  * ABSTRACTS - Mixins
+//  * Principle: DRY - Reusable style patterns
+//  * Principle: Low Specificity - Use mixins instead of nesting
+//  */
+
+// // Responsive breakpoint mixin
+// @mixin respond-to($breakpoint) {
+//   $value: map-get($breakpoints, $breakpoint);
+
+//   @if $value {
+//     @media (min-width: $value) {
+//       @content;
+//     }
+//   } @else {
+//     @warn "Breakpoint `#{$breakpoint}` not found in $breakpoints map.";
+//   }
+// }
+
+// // Flexbox center
+// @mixin flex-center {
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+// }
+
+// // Flex between (space-between with center alignment)
+// @mixin flex-between {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+// }
+
+// // Truncate text with ellipsis
+// @mixin text-truncate {
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+// }
+
+// // Multi-line text truncate
+// @mixin text-truncate-multiline($lines: 2) {
+//   display: -webkit-box;
+//   -webkit-line-clamp: $lines;
+//   -webkit-box-orient: vertical;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+// }
+
+// // Clear floats
+// @mixin clearfix {
+//   &::after {
+//     content: '';
+//     display: table;
+//     clear: both;
+//   }
+// }
+
+// // Aspect ratio box
+// @mixin aspect-ratio($width, $height) {
+//   position: relative;
+
+//   &::before {
+//     content: '';
+//     display: block;
+//     padding-bottom: percentage($height / $width);
+//   }
+// }
+
+// // Smooth scrolling
+// @mixin smooth-scroll {
+//   scroll-behavior: smooth;
+//   -webkit-overflow-scrolling: touch;
+// }
+
+// // Focus visible style
+// @mixin focus-visible {
+//   &:focus-visible {
+//     outline: 2px solid var(--color-primary);
+//     outline-offset: 2px;
+//   }
+// }
+
+// // Custom scrollbar
+// @mixin custom-scrollbar($width: 8px, $thumb-color: var(--color-gray-400)) {
+//   &::-webkit-scrollbar {
+//     width: $width;
+//     height: $width;
+//   }
+
+//   &::-webkit-scrollbar-track {
+//     background: var(--color-gray-200);
+//   }
+
+//   &::-webkit-scrollbar-thumb {
+//     background: $thumb-color;
+//     border-radius: var(--border-radius-pill);
+
+//     &:hover {
+//       background: var(--color-gray-500);
+//     }
+//   }
+// }
+
+// // Card style
+// @mixin card-style {
+//   background: var(--color-white);
+//   border-radius: var(--border-radius);
+//   box-shadow: var(--shadow-sm);
+//   padding: var(--spacing-4);
+// }
+
+// // Button reset
+// @mixin button-reset {
+//   border: none;
+//   background: none;
+//   padding: 0;
+//   margin: 0;
+//   font: inherit;
+//   color: inherit;
+//   cursor: pointer;
+
+//   &:focus {
+//     outline: none;
+//   }
+// }
+
+// // Visually hidden (accessible but not visible)
+// @mixin visually-hidden {
+//   position: absolute;
+//   width: 1px;
+//   height: 1px;
+//   padding: 0;
+//   margin: -1px;
+//   overflow: hidden;
+//   clip: rect(0, 0, 0, 0);
+//   white-space: nowrap;
+//   border: 0;
+// }
+
+// // Hardware acceleration
+// @mixin hardware-accelerate {
+//   transform: translateZ(0);
+//   backface-visibility: hidden;
+//   perspective: 1000px;
+// }

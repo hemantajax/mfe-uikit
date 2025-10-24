@@ -2,16 +2,23 @@
 
 ## 🎯 Overview
 
-This guide describes the **UIKit approach** for polyrepo micro-frontend architecture, where we publish a **single npm package** (`@hemantajax/mfe-uikit`) that contains all shared code, while maintaining clean internal organization.
+This guide describes the **UIKit approach** for polyrepo micro-frontend architecture, where we publish a **single npm package** (`@hemantajax/uikit`) that contains all shared code, while maintaining clean internal organization through multiple libraries.
+
+### Key Concept: Two Ways to Use
+
+1. **Inside this repository** (Development): Use individual libraries via `@mfe-uikit/*` path mappings
+2. **Outside this repository** (Consumers): Install and use the single package `@hemantajax/uikit`
 
 ---
 
 ## 🏗️ Architecture
 
-### Repository Structure
+### Current Repository Structure
 
 ```
-mfe-polyrepo-shared-libs/          ← Single repository
+mfe-uikit/                         ← This repository
+├── apps/
+│   └── uilab/                     ← Demo/testing application
 ├── libs/
 │   ├── layout/                    ← Non-publishable (internal)
 │   ├── components/                ← Non-publishable (internal)
@@ -21,32 +28,253 @@ mfe-polyrepo-shared-libs/          ← Single repository
 │   ├── pipes/                     ← Non-publishable (internal)
 │   ├── directives/                ← Non-publishable (internal)
 │   ├── constants/                 ← Non-publishable (internal)
-│   ├── styles/                    ← Non-publishable (internal)
+│   ├── styles/                    ← Non-publishable (SCSS library)
 │   └── uikit/                     ← PUBLISHABLE (meta-package)
 │       ├── src/
-│       │   └── index.ts           ← Re-exports all libraries
-│       └── package.json           ← Published to npm
+│       │   ├── index.ts           ← Public API - Re-exports everything
+│       │   └── lib/               ← Internal implementations
+│       ├── package.json           ← Published to npm as @hemantajax/uikit
+│       └── ng-package.json        ← Angular package configuration
 ├── .github/workflows/
-│   └── publish.yml
-├── nx.json
-├── package.json
-└── tsconfig.base.json
+│   └── publish.yml                ← CI/CD for publishing
+├── nx.json                        ← Nx workspace configuration
+├── package.json                   ← Workspace dependencies
+└── tsconfig.base.json             ← TypeScript path mappings
 ```
 
 ### Key Concepts
 
-1. **Internal Libraries** (Non-Publishable)
+#### 1. Internal Libraries (Non-Publishable)
 
-   - Organized by domain (layout, services, etc.)
-   - Used only within the monorepo
-   - Fast development with TypeScript path mappings
-   - Clean separation of concerns
+These libraries are for **internal development only** and are accessed via TypeScript path mappings:
 
-2. **UIKit Package** (Publishable)
-   - Meta-package that re-exports everything
-   - Only package published to npm
-   - Consumed by shell and all remotes
-   - Single version to manage
+| Library      | Import Path             | Purpose                                  |
+| ------------ | ----------------------- | ---------------------------------------- |
+| `layout`     | `@mfe-uikit/layout`     | Layout components (Header, Footer, etc.) |
+| `components` | `@mfe-uikit/components` | Reusable UI components                   |
+| `services`   | `@mfe-uikit/services`   | Shared services (HTTP, Storage, etc.)    |
+| `core`       | `@mfe-uikit/core`       | Guards, Interceptors, Models, Interfaces |
+| `utils`      | `@mfe-uikit/utils`      | Utility functions                        |
+| `pipes`      | `@mfe-uikit/pipes`      | Angular pipes                            |
+| `directives` | `@mfe-uikit/directives` | Angular directives                       |
+| `constants`  | `@mfe-uikit/constants`  | Application constants                    |
+| `styles`     | `@mfe-uikit/styles`     | SCSS styles, variables, mixins           |
+
+**Benefits:**
+
+- ✅ Organized by domain for better code structure
+- ✅ Fast development with instant TypeScript path resolution
+- ✅ Clear separation of concerns
+- ✅ Easy to refactor and maintain
+
+#### 2. UIKit Package (Publishable)
+
+The `uikit` library is the **only publishable package**:
+
+- **Package Name**: `@hemantajax/uikit`
+- **Purpose**: Meta-package that bundles and re-exports all internal libraries
+- **Published To**: npm registry (GitHub Packages or npm)
+- **Consumed By**: Shell and all remote micro-frontend applications
+- **Version**: Single version to manage (currently `0.0.1`)
+
+**Benefits:**
+
+- ✅ Single package installation
+- ✅ Simple imports in consumer applications
+- ✅ One version to track
+- ✅ All updates bundled together
+
+---
+
+## 📦 How to Use: Inside vs Outside This Repository
+
+### 🏠 Inside This Repository (Development)
+
+When working **inside this repository** (e.g., in the `uilab` demo app or adding new features), you use **individual libraries** via TypeScript path mappings defined in `tsconfig.base.json`.
+
+#### Configuration
+
+**tsconfig.base.json:**
+
+```json
+{
+  "compilerOptions": {
+    "paths": {
+      "@mfe-uikit/layout": ["libs/layout/src/index.ts"],
+      "@mfe-uikit/components": ["libs/components/src/index.ts"],
+      "@mfe-uikit/services": ["libs/services/src/index.ts"],
+      "@mfe-uikit/core": ["libs/core/src/index.ts"],
+      "@mfe-uikit/pipes": ["libs/pipes/src/index.ts"],
+      "@mfe-uikit/directives": ["libs/directives/src/index.ts"],
+      "@mfe-uikit/utils": ["libs/utils/src/index.ts"],
+      "@mfe-uikit/constants": ["libs/constants/src/index.ts"],
+      "@mfe-uikit/styles": ["libs/styles/src/index.ts"],
+      "@mfe-uikit/uikit": ["libs/uikit/src/index.ts"]
+    }
+  }
+}
+```
+
+#### Usage Examples
+
+**Component imports:**
+
+```typescript
+// apps/uilab/src/app/app.component.ts
+import { Component } from '@angular/core';
+import { LayoutComponent } from '@mfe-uikit/layout';
+import { ButtonComponent, CardComponent } from '@mfe-uikit/components';
+import { StorageService } from '@mfe-uikit/services';
+import { TruncatePipe } from '@mfe-uikit/pipes';
+import { HighlightDirective } from '@mfe-uikit/directives';
+
+@Component({
+  selector: 'app-root',
+  imports: [LayoutComponent, ButtonComponent, CardComponent, TruncatePipe, HighlightDirective],
+  template: `
+    <lib-layout>
+      <h1>{{ title | truncate : 20 }}</h1>
+      <lib-button [highlight]>Click me</lib-button>
+      <lib-card>Content here</lib-card>
+    </lib-layout>
+  `,
+})
+export class AppComponent {
+  title = 'Welcome to UIKit Demo Application';
+
+  constructor(private storage: StorageService) {
+    this.storage.setItem('user', { name: 'John' });
+  }
+}
+```
+
+**SCSS imports:**
+
+```scss
+// apps/uilab/src/styles.scss
+@import '@mfe-uikit/styles/main';
+
+// Or import specific modules
+@import '@mfe-uikit/styles/abstracts/variables';
+@import '@mfe-uikit/styles/abstracts/mixins';
+@import '@mfe-uikit/styles/components/buttons';
+```
+
+**Why use individual libraries inside the repo?**
+
+- ⚡ **Faster development**: TypeScript resolves paths instantly (no build needed)
+- 🔍 **Better IDE support**: Jump to definition works perfectly
+- 🐛 **Easier debugging**: Source code directly available
+- 📊 **Nx dependency graph**: Track dependencies between libraries
+- 🎯 **Precise imports**: Import only what you need from specific libraries
+
+---
+
+### 🌍 Outside This Repository (Consumer Applications)
+
+When using **outside this repository** (e.g., in Shell or Remote micro-frontend apps), you install the **single published package** from npm.
+
+#### Installation
+
+```bash
+# In your shell or remote application
+npm install @hemantajax/uikit@latest
+
+# Or with specific version
+npm install @hemantajax/uikit@0.0.1
+
+# Or with yarn
+yarn add @hemantajax/uikit@latest
+```
+
+#### Authentication (for GitHub Packages)
+
+If publishing to GitHub Packages, consumers need to authenticate:
+
+**Create `.npmrc` in the consumer project:**
+
+```
+@hemantajax:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+```
+
+**Or login via npm:**
+
+```bash
+npm login --registry=https://npm.pkg.github.com --scope=@hemantajax
+```
+
+#### Usage Examples
+
+**Component imports (all from single package):**
+
+```typescript
+// shell/src/app/app.component.ts
+import { Component } from '@angular/core';
+import {
+  LayoutComponent, // from layout library
+  ButtonComponent, // from components library
+  CardComponent, // from components library
+  StorageService, // from services library
+  TruncatePipe, // from pipes library
+  HighlightDirective, // from directives library
+  API_BASE_URL, // from constants library
+} from '@hemantajax/uikit';
+
+@Component({
+  selector: 'app-root',
+  imports: [LayoutComponent, ButtonComponent, CardComponent, TruncatePipe, HighlightDirective],
+  template: `
+    <lib-layout>
+      <h1>{{ title | truncate : 20 }}</h1>
+      <lib-button [highlight]>Click me</lib-button>
+      <lib-card>Content here</lib-card>
+    </lib-layout>
+  `,
+})
+export class AppComponent {
+  title = 'My Micro-Frontend Shell';
+
+  constructor(private storage: StorageService) {
+    console.log('API URL:', API_BASE_URL);
+    this.storage.setItem('user', { name: 'John' });
+  }
+}
+```
+
+**SCSS imports:**
+
+```scss
+// shell/src/styles.scss
+@import '@hemantajax/uikit/styles/main';
+
+// Or specific modules
+@import '@hemantajax/uikit/styles/abstracts/variables';
+@import '@hemantajax/uikit/styles/abstracts/mixins';
+```
+
+**Why use the single package outside the repo?**
+
+- 📦 **Simple installation**: One package instead of 10
+- 🔄 **Easy updates**: `npm update @hemantajax/uikit@latest`
+- 🎯 **Single version**: No version conflicts
+- 📝 **Clean imports**: Everything from one place
+- 🚀 **Faster setup**: Less configuration
+
+---
+
+### 🔄 Comparison: Inside vs Outside
+
+| Aspect           | Inside Repository             | Outside Repository              |
+| ---------------- | ----------------------------- | ------------------------------- |
+| **Import Path**  | `@mfe-uikit/layout`           | `@hemantajax/uikit`             |
+| **Installation** | Already available (workspace) | `npm install @hemantajax/uikit` |
+| **Resolution**   | TypeScript path mapping       | node_modules                    |
+| **Development**  | Live changes (no build)       | Published version only          |
+| **IDE Support**  | Jump to source                | Jump to .d.ts files             |
+| **Use Case**     | Developing the library itself | Consuming in other projects     |
+| **Speed**        | Instant (no build)            | Requires `npm install`          |
+| **Updates**      | Code directly edited          | `npm update` to get new version |
 
 ---
 
@@ -293,100 +521,181 @@ The internal libraries use `@mfe-shared` for development convenience, but the pu
 
 ### Step 6: Configure UIKit to Re-Export Everything
 
-Create `libs/uikit/src/index.ts`:
+The `libs/uikit/src/index.ts` file serves as the **public API** that re-exports all functionality:
 
 ```typescript
 /**
- * @hemantajax/mfe-uikit
+ * @hemantajax/uikit
  *
  * Complete UI Kit for Micro-Frontend applications
  * Includes layout, components, services, utilities, and more
  */
 
 // ===== Layout Components =====
-export * from '@mfe-shared/layout';
+export * from './lib/layout/layout';
 
 // ===== UI Components =====
-export * from '@mfe-shared/components';
+export * from './lib/components/components';
 
 // ===== Services =====
-export * from '@mfe-shared/services';
+export * from './lib/services/services';
 
 // ===== Core (Guards, Interceptors, Models) =====
-export * from '@mfe-shared/core';
+export * from './lib/core/core';
 
 // ===== Utilities =====
-export * from '@mfe-shared/utils';
+export * from './lib/utils/utils';
 
 // ===== Pipes =====
-export * from '@mfe-shared/pipes';
+export * from './lib/pipes/pipes';
 
 // ===== Directives =====
-export * from '@mfe-shared/directives';
+export * from './lib/directives/directives';
 
 // ===== Constants =====
-export * from '@mfe-shared/constants';
+export * from './lib/constants/constants';
 
-// Note: Styles are imported via SCSS, not exported from TypeScript
+// ===== UIKit Component =====
+export * from './lib/uikit/uikit';
+
+// Note: Styles library is SCSS-only and should be imported directly in your styles.scss
+// @import '@hemantajax/uikit/styles/main.scss';
 ```
+
+**Internal Implementation Structure:**
+
+Each `lib/*/*.ts` file imports from the actual library and re-exports it:
+
+```typescript
+// libs/uikit/src/lib/layout/layout.ts
+export * from '@mfe-uikit/layout';
+
+// libs/uikit/src/lib/components/components.ts
+export * from '@mfe-uikit/components';
+
+// libs/uikit/src/lib/services/services.ts
+export * from '@mfe-uikit/services';
+
+// ... and so on for each library
+```
+
+This approach provides:
+
+- ✅ Clean public API in `index.ts`
+- ✅ Organized internal structure
+- ✅ Easy to maintain and extend
 
 ### Step 7: Configure UIKit package.json
 
-Update `libs/uikit/package.json`:
+Current `libs/uikit/package.json`:
 
 ```json
 {
-  "name": "@hemantajax/mfe-uikit",
+  "name": "@hemantajax/uikit",
+  "version": "0.0.1",
+  "peerDependencies": {
+    "@angular/common": "^20.3.0",
+    "@angular/core": "^20.3.0"
+  },
+  "sideEffects": false
+}
+```
+
+**For Publishing to GitHub Packages or npm, add:**
+
+```json
+{
+  "name": "@hemantajax/uikit",
   "version": "1.0.0",
   "description": "Complete UI Kit for Micro-Frontend applications - includes layout, components, services, and utilities",
-  "main": "./src/index.js",
-  "types": "./src/index.d.ts",
+  "keywords": ["angular", "micro-frontend", "module-federation", "ui-kit", "components", "services"],
+  "author": "Hemant",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hemantajax/mfe-uikit.git"
+  },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@hemantajax",
     "access": "public"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hemantajax/mfe-polyrepo-shared-libs.git"
-  },
-  "keywords": ["angular", "micro-frontend", "module-federation", "ui-kit", "components", "services"],
-  "author": "Hemant",
-  "license": "MIT",
   "peerDependencies": {
-    "@angular/common": "^18.0.0",
-    "@angular/core": "^18.0.0",
-    "@angular/router": "^18.0.0"
-  }
+    "@angular/common": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/router": "^20.3.0"
+  },
+  "sideEffects": false
 }
 ```
 
-### Step 8: Configure Build Dependencies
+**Key Fields Explained:**
 
-Update `libs/uikit/project.json`:
+- `name`: Package name on npm/GitHub Packages (must match your registry scope)
+- `version`: Semantic versioning (update this with each release)
+- `peerDependencies`: Angular versions required by consumers
+- `sideEffects: false`: Enables tree-shaking for better bundle sizes
+- `publishConfig`: Where to publish (GitHub Packages, npm, etc.)
+
+### Step 8: Configure Build (Angular Package)
+
+Current `libs/uikit/project.json`:
 
 ```json
 {
   "name": "uikit",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/uikit/src",
+  "prefix": "lib",
   "projectType": "library",
+  "tags": [],
   "targets": {
     "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "executor": "@nx/angular:package",
+      "outputs": ["{workspaceRoot}/dist/{projectRoot}"],
       "options": {
-        "outputPath": "dist/libs/uikit",
-        "main": "libs/uikit/src/index.ts",
-        "tsConfig": "libs/uikit/tsconfig.lib.json",
-        "assets": ["libs/uikit/*.md"]
+        "project": "libs/uikit/ng-package.json"
       },
-      "dependsOn": ["^build"]
+      "configurations": {
+        "production": {
+          "tsConfig": "libs/uikit/tsconfig.lib.prod.json"
+        },
+        "development": {}
+      },
+      "defaultConfiguration": "production"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/uikit/jest.config.ts",
+        "tsConfig": "libs/uikit/tsconfig.spec.json"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
     }
-  },
-  "tags": ["type:publishable"],
-  "implicitDependencies": ["layout", "components", "services", "core", "utils", "pipes", "directives", "constants"]
+  }
 }
 ```
+
+**And `libs/uikit/ng-package.json`:**
+
+```json
+{
+  "$schema": "../../node_modules/ng-packagr/ng-package.json",
+  "dest": "../../dist/libs/uikit",
+  "lib": {
+    "entryFile": "src/index.ts"
+  }
+}
+```
+
+**Key Configuration Points:**
+
+- Uses `@nx/angular:package` executor (not `@nx/js:tsc`) for proper Angular library packaging
+- Outputs to `dist/libs/uikit` with proper Angular package format
+- `ng-package.json` defines the entry point and output location
+- Production configuration uses optimized TypeScript config
 
 ### Step 9: Configure npm Registry
 
@@ -460,44 +769,58 @@ git push -u origin main
 
 ---
 
-## 📦 Usage in Shell and Remotes
+## 📦 Usage in Shell and Remotes (External Projects)
 
 ### Installation
 
 ```bash
 # In shell or any remote repository
-npm install @hemantajax/mfe-uikit@latest
+npm install @hemantajax/uikit@latest
+
+# Or with specific version
+npm install @hemantajax/uikit@0.0.1
 ```
 
 ### Import Everything from Single Package
 
 ```typescript
-// Before (monorepo):
-import { HeaderComponent } from '@nxmfe/shared/layout';
-import { StorageService } from '@nxmfe/shared/services';
-import { TruncatePipe } from '@nxmfe/shared/pipes';
+// Before (inside this repo):
+import { LayoutComponent } from '@mfe-uikit/layout';
+import { StorageService } from '@mfe-uikit/services';
+import { TruncatePipe } from '@mfe-uikit/pipes';
 
-// After (polyrepo with UIKit):
-import { HeaderComponent, StorageService, TruncatePipe } from '@hemantajax/mfe-uikit';
+// After (in external projects):
+import { LayoutComponent, StorageService, TruncatePipe } from '@hemantajax/uikit';
 ```
 
 ### Using in Components
 
 ```typescript
-// app.component.ts
+// app.component.ts in your Shell or Remote app
 import { Component } from '@angular/core';
-import { HeaderComponent, NotFoundComponent, StorageService, TruncatePipe } from '@hemantajax/mfe-uikit';
+import {
+  LayoutComponent, // from layout library
+  StorageService, // from services library
+  TruncatePipe, // from pipes library
+  HighlightDirective, // from directives library
+  API_BASE_URL, // from constants library
+} from '@hemantajax/uikit';
 
 @Component({
   selector: 'app-root',
-  imports: [HeaderComponent, NotFoundComponent, TruncatePipe],
+  imports: [LayoutComponent, TruncatePipe, HighlightDirective],
   template: `
-    <app-header />
-    <router-outlet />
+    <lib-layout>
+      <h1>{{ title | truncate : 20 }}</h1>
+      <router-outlet />
+    </lib-layout>
   `,
 })
 export class AppComponent {
+  title = 'My Micro-Frontend Application';
+
   constructor(private storage: StorageService) {
+    console.log('API URL:', API_BASE_URL);
     this.storage.setItem('user', { name: 'John' });
   }
 }
@@ -506,46 +829,109 @@ export class AppComponent {
 ### Using Styles
 
 ```scss
-// styles.scss
-@import '@hemantajax/mfe-uikit/styles/variables';
-@import '@hemantajax/mfe-uikit/styles/mixins';
+// styles.scss in your Shell or Remote app
+@import '@hemantajax/uikit/styles/main';
+
+// Or import specific modules
+@import '@hemantajax/uikit/styles/abstracts/variables';
+@import '@hemantajax/uikit/styles/abstracts/mixins';
+@import '@hemantajax/uikit/styles/components/buttons';
 ```
 
 ---
 
 ## 🔄 Update Workflow
 
-### Updating UIKit Package
+### Development Workflow (Inside This Repo)
 
-1. **Make changes** to any internal library (layout, services, etc.)
-2. **Commit and push** to main branch
-3. **GitHub Actions automatically**:
-   - Builds all internal libraries
-   - Builds uikit (which bundles everything)
-   - Publishes to GitHub Packages
-4. **Update consumers**:
+1. **Make changes** to any internal library (layout, components, services, etc.)
+
    ```bash
-   npm update @hemantajax/mfe-uikit@latest
+   # Edit files in libs/layout, libs/components, etc.
    ```
 
-### Version Management
+2. **Test locally** in the `uilab` demo app
 
-Update version in `libs/uikit/package.json`:
+   ```bash
+   nx serve uilab
+   ```
+
+3. **Run tests and linting**
+
+   ```bash
+   nx test layout      # Test specific library
+   nx lint layout      # Lint specific library
+   nx test uikit       # Test the uikit package
+   ```
+
+4. **Build the uikit package**
+
+   ```bash
+   nx build uikit
+   # Output: dist/libs/uikit
+   ```
+
+5. **Commit and push** to main branch
+   ```bash
+   git add .
+   git commit -m "feat: add new button component"
+   git push origin main
+   ```
+
+### Publishing Workflow
+
+1. **Update version** in `libs/uikit/package.json`:
 
 ```json
 {
-  "name": "@hemantajax/mfe-uikit",
+  "name": "@hemantajax/uikit",
   "version": "1.1.0" // Increment version
 }
 ```
 
-Or use npm:
+2. **Build for production**:
 
 ```bash
-cd libs/uikit
-npm version patch  // 1.0.0 → 1.0.1
-npm version minor  // 1.0.0 → 1.1.0
-npm version major  // 1.0.0 → 2.0.0
+   nx build uikit --configuration=production
+```
+
+3. **Publish to npm/GitHub Packages**:
+
+   ```bash
+   cd dist/libs/uikit
+   npm publish
+   ```
+
+4. **Or use GitHub Actions** (if configured):
+   - Push to main triggers automatic build and publish
+   - Or manually trigger workflow
+
+### Version Management (Semantic Versioning)
+
+```bash
+# Patch version (bug fixes): 1.0.0 → 1.0.1
+cd libs/uikit && npm version patch
+
+# Minor version (new features): 1.0.0 → 1.1.0
+cd libs/uikit && npm version minor
+
+# Major version (breaking changes): 1.0.0 → 2.0.0
+cd libs/uikit && npm version major
+```
+
+### Updating Consumers (External Projects)
+
+In your Shell or Remote micro-frontend apps:
+
+```bash
+# Update to latest version
+npm update @hemantajax/uikit@latest
+
+# Or install specific version
+npm install @hemantajax/uikit@1.1.0
+
+# Check installed version
+npm list @hemantajax/uikit
 ```
 
 ---
@@ -577,63 +963,132 @@ npm version major  // 1.0.0 → 2.0.0
 
 ## 📊 Comparison with Multi-Package Approach
 
-| Aspect                    | UIKit (Single Package)              | Multi-Package           |
-| ------------------------- | ----------------------------------- | ----------------------- |
-| **Packages to publish**   | 1                                   | 9                       |
-| **Installation**          | `npm install @hemantajax/mfe-uikit` | Install 9 packages      |
-| **Import complexity**     | Single import source                | Multiple import sources |
-| **Version management**    | 1 version                           | 9 versions              |
-| **Setup time**            | ~2 hours                            | ~4 hours                |
-| **Maintenance**           | Simple                              | Complex                 |
-| **Internal organization** | ✅ Clean                            | ✅ Clean                |
-| **Publishing workflow**   | Simple                              | Complex                 |
-| **Best for**              | Most projects                       | Large enterprises       |
+| Aspect                    | UIKit (Single Package)           | Multi-Package              |
+| ------------------------- | -------------------------------- | -------------------------- |
+| **Packages to publish**   | 1                                | 10                         |
+| **Installation**          | `npm install @hemantajax/uikit`  | Install 10 packages        |
+| **Import complexity**     | Single import source             | Multiple import sources    |
+| **Version management**    | 1 version                        | 10 versions to synchronize |
+| **Setup time**            | ~2 hours                         | ~4-6 hours                 |
+| **Maintenance**           | Simple                           | Complex                    |
+| **Internal organization** | ✅ Clean (9 internal + 1 public) | ✅ Clean                   |
+| **Publishing workflow**   | Simple (build once, publish)     | Complex (build 10x)        |
+| **Bundle size**           | Optimized with tree-shaking      | Can be optimized           |
+| **Developer experience**  | Easy imports, single update      | Multiple import paths      |
+| **Best for**              | Most projects                    | Large enterprises          |
 
 ---
 
 ## 🧪 Testing Locally
 
-### Build and Test
+### Build and Test Inside This Repo
 
 ```bash
-# Build uikit
+# Build uikit package
 nx build uikit
 
 # Check output
 ls -la dist/libs/uikit/
 
-# Test in another project (local link)
+# Run tests
+nx test uikit
+
+# Lint
+nx lint uikit
+
+# Test in the demo app (uilab)
+nx serve uilab
+```
+
+### Test in External Projects (Local Link)
+
+Before publishing, test the package in your Shell or Remote apps:
+
+```bash
+# Step 1: Build the package
+nx build uikit --configuration=production
+
+# Step 2: Create npm link
 cd dist/libs/uikit
 npm link
 
-# In shell/remote project
-npm link @hemantajax/mfe-uikit
+# Step 3: In your shell/remote project
+cd /path/to/your/shell-app
+npm link @hemantajax/uikit
+
+# Step 4: Test the integration
+npm start
+
+# Step 5: When done testing, unlink
+npm unlink @hemantajax/uikit
+npm install  # Reinstall normal dependencies
 ```
 
 ### Verify Package Contents
 
 ```bash
-# Check what's included
+# Check what files will be published
 cd dist/libs/uikit
-tar -tzf $(npm pack)
+npm pack --dry-run
+
+# Or actually create the tarball
+npm pack
+
+# Inspect the tarball contents
+tar -tzf hemantajax-uikit-0.0.1.tgz
+```
+
+### Expected Package Structure
+
+```
+dist/libs/uikit/
+├── esm2022/              ← ES2022 modules
+├── fesm2022/             ← Flattened ES2022 modules
+├── lib/                  ← TypeScript source (for IDE)
+├── index.d.ts            ← Type definitions
+├── package.json          ← Package metadata
+└── README.md             ← Documentation
 ```
 
 ---
 
 ## 🚀 Deployment Checklist
 
-- [ ] All internal libraries created
-- [ ] Code copied from monorepo
-- [ ] UIKit library created (publishable)
-- [ ] UIKit re-exports all libraries
-- [ ] package.json configured
-- [ ] GitHub Packages registry configured
-- [ ] GitHub Actions workflow created
+### Initial Setup
+
+- [x] Nx workspace created
+- [x] All 9 internal libraries created (layout, components, services, core, pipes, directives, utils, constants, styles)
+- [x] UIKit library created as publishable Angular package
+- [x] UIKit configured to re-export all libraries
+- [x] Demo app (uilab) created for testing
+- [x] TypeScript path mappings configured in tsconfig.base.json
+
+### Package Configuration
+
+- [ ] `libs/uikit/package.json` - Update version and metadata
+- [ ] `libs/uikit/package.json` - Add publishConfig with registry URL
+- [ ] `libs/uikit/package.json` - Configure repository and author info
+- [ ] `.npmrc` - Configure npm registry authentication
+- [ ] `libs/uikit/README.md` - Add package documentation
+
+### Build & Test
+
+- [ ] Run `nx build uikit` successfully
+- [ ] Verify dist/libs/uikit structure
+- [ ] Test package locally with `npm link`
+- [ ] Test imports work in demo app (uilab)
+- [ ] Run tests: `nx test uikit`
+- [ ] Run linting: `nx lint uikit`
+
+### Publishing
+
+- [ ] GitHub Actions workflow created (optional)
 - [ ] Repository pushed to GitHub
-- [ ] First build successful
-- [ ] Package published to GitHub Packages
-- [ ] Package visible in GitHub Packages UI
-- [ ] Test installation in shell/remote
+- [ ] First manual publish successful
+- [ ] Package visible in npm/GitHub Packages
+- [ ] Test installation in external project
+- [ ] Verify all exports work correctly
+- [ ] Update external projects to use the package
 
 ---
 
@@ -649,64 +1104,97 @@ tar -tzf $(npm pack)
 
 Once your workspace is set up, here are the commands you'll use daily:
 
-### Adding a New Library
+### Adding a New Component to an Existing Library
 
 ```bash
-# Interactive mode (recommended)
-nx g lib my-new-lib
+# Add component to layout library
+nx g component header --project=layout --export
 
-# Or specify generator explicitly
-nx g @nx/angular:lib my-new-lib
+# Add component to components library
+nx g component button --project=components --export
 
-# Only add --importPath if you need a custom name
-nx g lib my-new-lib --importPath=@custom/my-lib
+# Add service to services library
+nx g service auth --project=services
+
+# Add pipe to pipes library
+nx g pipe truncate --project=pipes --export
+
+# Add directive to directives library
+nx g directive highlight --project=directives --export
 ```
 
-### Adding a Component to an Existing Library
+**Note:** Use `--export` to automatically export from the library's index.ts
+
+### Working with Internal Libraries
 
 ```bash
-# Simple form
-nx g component my-component --project=layout
+# Serve the demo app (tests all libraries)
+nx serve uilab
 
-# Full form
-nx g @nx/angular:component my-component --project=layout
-```
-
-### Building and Testing
-
-```bash
-# Build a single library
+# Build a specific library (for debugging)
 nx build layout
 
-# Build everything
-nx run-many --target=build --all
+# Test a specific library
+nx test components
 
-# Test a library
-nx test layout
+# Lint a specific library
+nx lint services
 
-# Lint
-nx lint layout
+# Run affected commands (only changed libraries)
+nx affected:test
+nx affected:lint
+nx affected:build
 ```
 
-### Publishing Updates
+### Building and Publishing the UIKit Package
 
 ```bash
 # 1. Make changes to any internal library
-# 2. Update version in libs/uikit/package.json
-npm version patch  # or minor, or major
+# Example: Edit libs/components/src/lib/button/button.component.ts
 
-# 3. Commit and push
-git add .
-git commit -m "feat: add new feature"
-git push
+# 2. Test locally in uilab
+nx serve uilab
 
-# 4. GitHub Actions automatically publishes to npm
-# 5. Update in consumer projects
-cd ../my-shell-app
-npm update @hemantajax/mfe-uikit@latest
+# 3. Update version in libs/uikit/package.json
+# Manually edit version: "0.0.1" → "0.0.2"
+# Or use npm version:
+cd libs/uikit
+npm version patch  # patch, minor, or major
+cd ../..
+
+# 4. Build the uikit package
+nx build uikit --configuration=production
+
+# 5. (Optional) Test with npm link before publishing
+cd dist/libs/uikit
+npm link
+cd /path/to/your/shell-app
+npm link @hemantajax/uikit
+
+# 6. Publish to npm/GitHub Packages
+cd dist/libs/uikit
+npm publish
+
+# 7. Update in consumer projects
+cd /path/to/your/shell-app
+npm update @hemantajax/uikit@latest
 ```
 
-**Key Takeaway:** Use the simple `nx g lib` and `nx g component` forms. Nx will prompt you for what it needs!
+### Using Nx Dependency Graph
+
+```bash
+# Visualize library dependencies
+nx graph
+
+# See what will be affected by your changes
+nx affected:graph
+```
+
+**Key Takeaway:**
+
+- Develop inside this repo using `@mfe-uikit/*` imports
+- Build and publish `uikit` package for external consumption
+- External projects import from `@hemantajax/uikit`
 
 ---
 
@@ -714,16 +1202,38 @@ npm update @hemantajax/mfe-uikit@latest
 
 The **UIKit approach** gives you:
 
-- ✅ **Single package** for easy consumption
-- ✅ **Clean internal organization** for maintainability
-- ✅ **Nx benefits** for development
-- ✅ **Simple publishing** workflow
-- ✅ **Best of both worlds**: monorepo development, polyrepo deployment
+- ✅ **Single package** (`@hemantajax/uikit`) for easy consumption in external projects
+- ✅ **Clean internal organization** with 9 domain-specific libraries for maintainability
+- ✅ **Dual development modes**:
+  - Inside repo: Use `@mfe-uikit/*` for fast development
+  - Outside repo: Use `@hemantajax/uikit` for consumption
+- ✅ **Nx benefits**: Dependency graph, affected commands, caching, and incremental builds
+- ✅ **Simple publishing** workflow with Angular package format
+- ✅ **Tree-shaking support** for optimal bundle sizes
+- ✅ **Best of both worlds**: Monorepo development experience, polyrepo deployment model
 
-This is the recommended approach for most polyrepo micro-frontend projects!
+### Quick Command Reference
+
+| Task                        | Command                                |
+| --------------------------- | -------------------------------------- |
+| **Develop inside repo**     | `nx serve uilab`                       |
+| **Build uikit package**     | `nx build uikit`                       |
+| **Test a library**          | `nx test components`                   |
+| **Lint a library**          | `nx lint services`                     |
+| **View dependency graph**   | `nx graph`                             |
+| **Publish package**         | `cd dist/libs/uikit && npm publish`    |
+| **Install in external app** | `npm install @hemantajax/uikit@latest` |
+| **Update in external app**  | `npm update @hemantajax/uikit@latest`  |
+
+This is the **recommended approach** for polyrepo micro-frontend projects! 🚀
 
 ---
 
-**Created**: October 21, 2025  
-**Repository**: https://github.com/hemantajax/mfe-polyrepo-shared-libs (to be created)  
-**Package**: `@hemantajax/mfe-uikit`
+## 📝 Document Information
+
+**Created**: October 24, 2025  
+**Last Updated**: October 24, 2025  
+**Repository**: https://github.com/hemantajax/mfe-uikit  
+**Package**: `@hemantajax/uikit`  
+**Current Version**: `0.0.1`  
+**Status**: ✅ Active Development
